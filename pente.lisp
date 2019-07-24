@@ -36,7 +36,14 @@
            move-list))
 
 (defun is-five-in-row (color move-list)
-  nil)
+  (let ((moves (filter-color-out color move-list)))))
+
+(defun filter-color-out (color move-list)
+    (remove-if (lambda (move)
+                 (if (eq (move-color move) color)
+                     t
+                     nil))
+               move-list))
 
 (defun captured-enough-for-win (num-captured)
   (if (>= num-captured *max-captures*)
