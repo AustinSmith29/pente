@@ -1,8 +1,8 @@
-(defparameter *max-captures* 10)
-(defparameter *white* 'W)
-(defparameter *black* 'B)
-(defparameter *empty* 'E)
-(defparameter *board-size* '(13 13))
+(defconstant *max-captures* 10)
+(defconstant *white* 'W)
+(defconstant *black* 'B)
+(defconstant *empty* 'E)
+(defconstant *board-size* '(13 13))
 
 (defun move-x (move)
   (car (car move)))
