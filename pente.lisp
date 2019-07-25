@@ -22,6 +22,9 @@
       (setf (aref board (move-x move) (move-y move)) (move-color move)))
     board))
 
+(defun move-at (move x y)
+  (equal (move-coord move) (list x y)))
+
 (defun remove-piece (x y move-list)
   (remove-if (lambda (move)
                (equal (move-coord move) (list x y)))
@@ -30,19 +33,24 @@
 (defun place-piece (x y color move-list)
   (cons (cons (list x y) color) move-list))
 
-(defun piece-at-space (x y move-list)
+(defun get-piece-at-space (x y move-list)
   (find-if (lambda (move)
              (equal (move-coord move) (list x y)))
            move-list))
 
 (defun is-five-in-row (color move-list)
-  (let ((moves (filter-color-out color move-list)))))
+  (let ((moves (select-moves-with-color color move-list)))
+    (is-five-in-row-iter color moves 1)))
 
-(defun filter-color-out (color move-list)
+(defun is-five-in-row-iter (color move-list direction count)
+  (let ((move (car move-list)))
+    ()))
+
+(defun select-moves-with-color (color move-list)
     (remove-if (lambda (move)
                  (if (eq (move-color move) color)
-                     t
-                     nil))
+                     nil
+                     t))
                move-list))
 
 (defun captured-enough-for-win (num-captured)
