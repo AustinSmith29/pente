@@ -4,17 +4,21 @@
 (defparameter *empty* 'E)
 (defparameter *board-size* '(13 13))
 
-(defun move-x (move)
-  (car (car move)))
+(defstruct move
+  x
+  y
+  color)
 
-(defun move-y (move)
-  (car (cdr (car move))))
+(defun move-at (x y)
+  (lambda (move)
+    (equal (list (move-x move) (move-y move))
+	   (list x y))))
 
-(defun move-coord (move)
-  (car move))
-
-(defun move-color (move)
-  (cdr move))
+(defstruct gamestate
+  move-list
+  turn
+  white-captures
+  black-captures)
 
 (defun make-board-from-move-list (move-list)
   (let ((board (make-array *board-size* :initial-element *empty*)))
@@ -22,27 +26,18 @@
       (setf (aref board (move-x move) (move-y move)) (move-color move)))
     board))
 
-(defun move-at (move x y)
-  (equal (move-coord move) (list x y)))
-
 (defun remove-piece (x y move-list)
-  (remove-if (lambda (move)
-               (equal (move-coord move) (list x y)))
-             move-list))
+  (remove-if (move-at x y) move-list))
 
 (defun place-piece (x y color move-list)
-  (cons (cons (list x y) color) move-list))
+  (cons (make-move :x x :y y :color color) move-list))
 
 (defun get-piece-at-space (x y move-list)
-  (find-if (lambda (move)
-             (equal (move-coord move) (list x y)))
-           move-list))
+  (find-if (move-at x y) move-list))
 
 (defun is-five-in-row (color move-list)
   (let ((result nil)
-	(moves (sort (select-moves-with-color color move-list)
-		     #'<=
-		     :key (lambda (x) (first (first x))))))
+	(moves (select-moves-with-color color move-list)))
     (dolist (move moves)
       (if (or
 	   (check-horizontal-win move moves)
